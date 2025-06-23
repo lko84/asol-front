@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.467,=C:\Wrk\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.032,=C:\Wrk\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.472,C:\Wrk\Unit1.pas=C:\Wrk\asol-front\src\Main.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.005,C:\Wrk\asol-front\Unit2.dfm=C:\Wrk\asol-front\LoginFormUnit.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.502,C:\Wrk\asol-front\Unit2.dfm=C:\Wrk\asol-front\src\Login.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.502,C:\Wrk\asol-front\Unit2.pas=C:\Wrk\asol-front\src\Login.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.559,C:\Wrk\Project1.dproj=C:\Wrk\asol-front\AsolFront.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.472,C:\Wrk\Unit1.dfm=C:\Wrk\asol-front\src\Main.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.774,=C:\Wrk\asol-front\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.005,C:\Wrk\asol-front\Unit2.pas=C:\Wrk\asol-front\LoginFormUnit.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.549,=C:\Wrk\asol-front\Unit2.pas</Transaction>
+  </Transactions>
+</BorlandProject>

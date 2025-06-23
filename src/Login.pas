@@ -1,0 +1,218 @@
+unit Login;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, REST.Types, REST.Client,
+  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ExtCtrls, System.JSON;
+
+type
+  TLoginForm = class(TForm)
+    EditUsername: TEdit;
+    EditPassword: TEdit;
+    BtnLogin: TButton;
+    BtnCancel: TButton;
+    RESTClient1: TRESTClient;
+    RESTRequest1: TRESTRequest;
+    RESTResponse1: TRESTResponse;
+    FlashTimer: TTimer;
+    procedure BtnLoginClick(Sender: TObject);
+    procedure BtnCancelClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FlashRed;
+    procedure DoExecute;
+    procedure HandleError(AError: Exception);
+    procedure FlashTimerTimer(Sender: TObject);
+    procedure EditUsernameKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    FOriginalColor: TColor;
+    FStep: Integer;
+    FMaxSteps: Integer;
+    FFadingIn: Boolean;
+  public
+    Token: string;
+  end;
+
+var
+  LoginForm: TLoginForm;
+
+implementation
+
+{$R *.dfm}
+
+uses Main;
+
+procedure TLoginForm.FlashRed;
+begin
+  FOriginalColor := EditUsername.Color;
+  FStep := 0;
+  FMaxSteps := 6; // Number of steps for fade in/out
+  FFadingIn := True; // Start fading to red
+  FlashTimer.Enabled := True;
+end;
+
+procedure TLoginForm.FlashTimerTimer(Sender: TObject);
+var
+  R, G, B: Byte;
+  NewColor: TColor;
+  OrigR, OrigG, OrigB: Byte;
+  TargetR, TargetG, TargetB: Byte;
+  Ratio: Double;
+begin
+  // Extract RGB of original color
+  OrigR := GetRValue(ColorToRGB(FOriginalColor));
+  OrigG := GetGValue(ColorToRGB(FOriginalColor));
+  OrigB := GetBValue(ColorToRGB(FOriginalColor));
+
+  // Target is red color
+  TargetR := 255;
+  TargetG := 0;
+  TargetB := 0;
+
+  if FFadingIn then
+    Ratio := FStep / FMaxSteps
+  else
+    Ratio := 1 - (FStep / FMaxSteps);
+
+  // Calculate interpolated RGB values
+  R := Round(OrigR + Ratio * (TargetR - OrigR));
+  G := Round(OrigG + Ratio * (TargetR - OrigG));
+  B := Round(OrigB + Ratio * (TargetB - OrigB));
+
+  NewColor := RGB(R, G, B);
+  EditUsername.Color := NewColor;
+  EditPassword.Color := NewColor;
+
+  Inc(FStep);
+
+  if FStep > FMaxSteps then
+    if FFadingIn then
+    begin
+      // Switch to fading out
+      FFadingIn := False;
+      FStep := 0;
+    end
+    else
+    begin
+      // Fade finished, restore original color and stop timer
+      EditUsername.Color := FOriginalColor;
+      EditPassword.Color := FOriginalColor;
+      FlashTimer.Enabled := False;
+    end;
+end;
+
+procedure TLoginForm.BtnCancelClick(Sender: TObject);
+begin
+  FlashTimer.Enabled := False;
+  ModalResult := mrCancel;
+  Application.Terminate;
+  Close;
+end;
+
+procedure TLoginForm.BtnLoginClick(Sender: TObject);
+var
+  JSONBody: TJSONObject;
+begin
+  // Validate inputs
+  if (Trim(EditUsername.Text) = '') or (Trim(EditPassword.Text) = '') then
+  begin
+    FlashRed;
+    Exit;
+  end;
+
+  // Reset previous request parameters
+  RESTRequest1.ClearBody;
+  RESTRequest1.ResetToDefaults;
+
+  // Configure REST client
+  RESTClient1.BaseURL := 'http://localhost:8080';
+  RESTRequest1.Resource := 'auth/login';
+  RESTRequest1.Method := rmPOST;
+
+  // Build JSON body safely
+  JSONBody := TJSONObject.Create;
+  try
+    JSONBody.AddPair('username', Trim(EditUsername.Text));
+    JSONBody.AddPair('password', Trim(EditPassword.Text));
+    RESTRequest1.AddBody(JSONBody.ToString, ctAPPLICATION_JSON);
+  finally
+    JSONBody.Free;
+  end;
+
+  // Execute request asynchronously
+  try
+    RESTRequest1.ExecuteAsync(DoExecute, True, True, nil);
+  except
+    on E: Exception do
+    begin
+      HandleError(E);
+    end;
+  end;
+end;
+
+procedure TLoginForm.DoExecute;
+begin
+
+  begin
+    try
+      if RESTResponse1.StatusCode = 200 then
+      begin
+        Token := RESTResponse1.JSONValue.GetValue<string>('token');
+        ModalResult := mrOk;
+        Exit;
+      end
+      else
+      begin
+        HandleError(nil);
+      end;
+    except
+      on E: Exception do
+      begin
+        HandleError(E);
+      end;
+    end;
+  end;
+end;
+
+procedure TLoginForm.HandleError(AError: Exception);
+begin
+  OutputDebugString(PChar(AError.Message));
+  FlashRed;
+  EditPassword.Clear;
+end;
+
+procedure TLoginForm.EditUsernameKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    Key := 0;
+    EditPassword.SetFocus;
+  end;
+end;
+
+procedure SetCueBanner(Edit: TEdit; const CueText: string);
+const
+  EM_SETCUEBANNER = $1501;
+begin
+  SendMessage(Edit.Handle, EM_SETCUEBANNER, 0, LPARAM(PChar(CueText)));
+end;
+
+procedure TLoginForm.FormCreate(Sender: TObject);
+begin
+  SetCueBanner(EditUsername, 'user name');
+  SetCueBanner(EditPassword, 'password');
+  RESTClient1.BaseURL := 'http://localhost:8080';
+end;
+
+procedure TLoginForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  FlashTimer.Enabled := False;
+  if (ModalResult = mrCancel) then Application.Terminate;
+end;
+
+end.

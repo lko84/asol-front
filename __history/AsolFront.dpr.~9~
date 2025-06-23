@@ -1,0 +1,26 @@
+program AsolFront;
+
+uses
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Login in 'src\Login.pas' {LoginForm} ,
+  Main in 'src\Main.pas' {Form1};
+
+{$R *.res}
+
+var
+  Form1: TForm1;
+  LoginDlg: TLoginForm;
+begin
+  Application.Initialize;
+  Application.CreateForm(TForm1, Form1);
+  Application.MainFormOnTaskbar := False;
+  Application.ShowMainForm := False;
+
+  LoginDlg := TLoginForm.Create(nil);
+  LoginDlg.ShowModal;
+  Form1.Show;
+  
+  Application.Run;
+
+end.
