@@ -13,7 +13,7 @@ A Windows desktop front end for the Asol Orders Demo back end. Built in Delphi (
 
 ## How to Use
 
-1. Locally run the monolyth back end (`asol-orders-demo\mono`)
+1. Locally run the monolith back end (`asol-orders-demo\mono`)
 2. Run the compiled .\Win32\Debug\AsolFront.exe
 3. A login dialog will appear:
    - Use test credentials from your back end dataset
