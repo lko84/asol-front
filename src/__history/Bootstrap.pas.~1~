@@ -1,0 +1,12 @@
+unit Bootstrap;
+
+uses Spring.Container, AuthServiceImpl, OrderServiceImpl;
+
+interface
+
+procedure RegisterServices;
+begin
+  GlobalContainer.RegisterType<IAuthService, TAuthService>.AsSingleton;
+  GlobalContainer.RegisterType<IOrderService, TOrderService>.AsSingleton;
+  GlobalContainer.Build;
+end;

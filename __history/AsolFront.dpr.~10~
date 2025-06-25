@@ -3,12 +3,8 @@ program AsolFront;
 uses
   Vcl.Forms,
   Vcl.Dialogs,
-  Login in 'src\Login.pas' {LoginForm},
-  Main in 'src\Main.pas' {Form1},
-  Bootstrap in 'src\Bootstrap.pas',
-  Services.AuthService in 'Src\Services\Services.AuthService.pas',
-  Services.Interfaces in 'src\Services\Services.Interfaces.pas',
-  Services.Orderservice in 'src\Services\Services.Orderservice.pas';
+  Login in 'src\Login.pas' {LoginForm} ,
+  Main in 'src\Main.pas' {Form1};
 
 {$R *.res}
 
