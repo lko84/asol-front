@@ -103,7 +103,7 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <DCC_UnitSearchPath>.\src\Services;..\spring4d\Source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>.\src\Services;.\lib;.\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
@@ -126,16 +126,39 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="src\Main.pas">
+            <Form>MainForm</Form>
+        </DCCReference>
         <DCCReference Include="src\Login.pas">
             <Form>LoginForm</Form>
-        </DCCReference>
-        <DCCReference Include="src\Main.pas">
-            <Form>Form1</Form>
         </DCCReference>
         <DCCReference Include="src\Bootstrap.pas"/>
         <DCCReference Include="Src\Services\Services.AuthService.pas"/>
         <DCCReference Include="src\Services\Services.Interfaces.pas"/>
         <DCCReference Include="src\Services\Services.Orderservice.pas"/>
+        <DCCReference Include="src\Services\Services.UserService.pas">
+            <Form>$R *.res</Form>
+        </DCCReference>
+        <DCCReference Include="src\OrderDetailFrame.pas">
+            <Form>OrderDetail</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="src\OrderListFrame.pas">
+            <Form>OrderList</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="src\UserDetailFrame.pas">
+            <Form>UserDetail</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="src\UserListFrame.pas">
+            <Form>UserList</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -31,11 +31,28 @@ begin
 end;
 
 function TAuthService.Login(const Username, Password: string): Boolean;
+var
+  JsonObj: TJSONObject;
 begin
+  FRequest.ResetToDefaults;
+
   FRequest.Resource := 'auth/login';
   FRequest.Method := rmPOST;
-  FRequest.AddParameter('username', Username, pkGETorPOST);
-  FRequest.AddParameter('password', Password, pkGETorPOST);
+  FRequest.Client := FClient;
+  FRequest.Response := FResponse;
+  // FRequest.ContentType := 'application/json';
+
+  // Build JSON manually
+  JsonObj := TJSONObject.Create;
+  try
+    JsonObj.AddPair('username', Username);
+    JsonObj.AddPair('password', Password);
+    FRequest.Body.ClearBody;
+    FRequest.AddBody(JsonObj.ToJSON, ctAPPLICATION_JSON);
+  finally
+    JsonObj.Free;
+  end;
+
   FRequest.Execute;
 
   if FResponse.StatusCode = 200 then
@@ -47,9 +64,8 @@ begin
   else
     Result := False;
 end;
-
 function TAuthService.GetToken: string;
 begin
   Result := FToken;
 end;
-
+end.

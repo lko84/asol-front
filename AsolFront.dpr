@@ -3,29 +3,32 @@ program AsolFront;
 uses
   Vcl.Forms,
   Vcl.Dialogs,
+  Main in 'src\Main.pas' {MainForm},
   Login in 'src\Login.pas' {LoginForm},
-  Main in 'src\Main.pas' {Form1},
   Bootstrap in 'src\Bootstrap.pas',
   Services.AuthService in 'Src\Services\Services.AuthService.pas',
   Services.Interfaces in 'src\Services\Services.Interfaces.pas',
-  Services.Orderservice in 'src\Services\Services.Orderservice.pas';
+  Services.Orderservice in 'src\Services\Services.Orderservice.pas',
+  Services.UserService in 'src\Services\Services.UserService.pas' {$R *.res},
+  OrderDetailFrame in 'src\OrderDetailFrame.pas' {OrderDetail: TFrame},
+  OrderListFrame in 'src\OrderListFrame.pas' {OrderList: TFrame},
+  UserDetailFrame in 'src\UserDetailFrame.pas' {UserDetail: TFrame},
+  UserListFrame in 'src\UserListFrame.pas' {UserList: TFrame};
 
 {$R *.res}
 
 var
-  Form1: TForm1;
+  // MainForm: TMain;
   LoginDlg: TLoginForm;
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  RegisterServices;
+  Application.CreateForm(TMainForm, MainForm);
   Application.MainFormOnTaskbar := False;
   Application.ShowMainForm := False;
 
   LoginDlg := TLoginForm.Create(nil);
   LoginDlg.ShowModal;
-  Form1.Memo1.Lines.Text:=LoginDlg.Token;
-  Form1.Show;
-  
-  Application.Run;
 
+  Application.Run;
 end.

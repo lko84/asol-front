@@ -2,6 +2,31 @@ unit Services.UserService;
 
 interface
 
+uses System.JSON, REST.Client, REST.Types, REST.Response.Adapter,
+  System.Classes, System.SysUtils, Services.Interfaces;
+
+type
+  TUserService = class(TInterfacedObject, IUserService)
+  private
+    FToken: string;
+    FClient: TRESTClient;
+    FRequest: TRESTRequest;
+    FResponse: TRESTResponse;
+  public
+    constructor Create;
+    function GetUsers: TJSONArray;
+  end;
+
 implementation
+
+constructor TUserService.Create;
+begin
+//
+end;
+
+function TUserService.GetUsers: TJSONArray;
+begin
+//
+end;
 
 end.

@@ -6,7 +6,10 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, REST.Types, REST.Client,
-  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ExtCtrls, System.JSON;
+  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ExtCtrls, System.JSON,
+  Services.AuthService, Services.Interfaces,
+  Spring.Container
+  ;
 
 type
   TLoginForm = class(TForm)
@@ -18,17 +21,17 @@ type
     RESTRequest1: TRESTRequest;
     RESTResponse1: TRESTResponse;
     FlashTimer: TTimer;
+    constructor Create(AOwner: TComponent);
     procedure BtnLoginClick(Sender: TObject);
     procedure BtnCancelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FlashRed;
-    procedure DoExecute;
-    procedure HandleError(AError: Exception);
     procedure FlashTimerTimer(Sender: TObject);
     procedure EditUsernameKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
+    FAuthService: IAuthService;
     FOriginalColor: TColor;
     FStep: Integer;
     FMaxSteps: Integer;
@@ -45,6 +48,58 @@ implementation
 {$R *.dfm}
 
 uses Main;
+
+constructor TLoginForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAuthService := GlobalContainer.Resolve<IAuthService>;
+end;
+
+procedure TLoginForm.BtnLoginClick(Sender: TObject);
+begin
+  if FAuthService.Login(EditUsername.Text, EditPassword.Text) then
+    ModalResult:=mrOk
+  else
+    FlashRed;
+    EditPassword.Clear
+end;
+
+procedure TLoginForm.BtnCancelClick(Sender: TObject);
+begin
+  FlashTimer.Enabled := False;
+  Close;
+  Application.Terminate;
+end;
+
+procedure TLoginForm.EditUsernameKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    Key := 0;
+    EditPassword.SetFocus;
+  end;
+end;
+
+procedure SetCueBanner(Edit: TEdit; const CueText: string);
+const
+  EM_SETCUEBANNER = $1501;
+begin
+  SendMessage(Edit.Handle, EM_SETCUEBANNER, 0, LPARAM(PChar(CueText)));
+end;
+
+procedure TLoginForm.FormCreate(Sender: TObject);
+begin
+  SetCueBanner(EditUsername, 'user name');
+  SetCueBanner(EditPassword, 'password');
+  RESTClient1.BaseURL := 'http://localhost:8080';
+end;
+
+procedure TLoginForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  FlashTimer.Enabled := False;
+  if (ModalResult = mrCancel) then Application.Terminate;
+end;
 
 procedure TLoginForm.FlashRed;
 begin
@@ -103,116 +158,6 @@ begin
       EditPassword.Color := FOriginalColor;
       FlashTimer.Enabled := False;
     end;
-end;
-
-procedure TLoginForm.BtnCancelClick(Sender: TObject);
-begin
-  FlashTimer.Enabled := False;
-  ModalResult := mrCancel;
-  Application.Terminate;
-  Close;
-end;
-
-procedure TLoginForm.BtnLoginClick(Sender: TObject);
-var
-  JSONBody: TJSONObject;
-begin
-  // Validate inputs
-  if (Trim(EditUsername.Text) = '') or (Trim(EditPassword.Text) = '') then
-  begin
-    FlashRed;
-    Exit;
-  end;
-
-  // Reset previous request parameters
-  RESTRequest1.ClearBody;
-  RESTRequest1.ResetToDefaults;
-
-  // Configure REST client
-  RESTClient1.BaseURL := 'http://localhost:8080';
-  RESTRequest1.Resource := 'auth/login';
-  RESTRequest1.Method := rmPOST;
-
-  // Build JSON body safely
-  JSONBody := TJSONObject.Create;
-  try
-    JSONBody.AddPair('username', Trim(EditUsername.Text));
-    JSONBody.AddPair('password', Trim(EditPassword.Text));
-    RESTRequest1.AddBody(JSONBody.ToString, ctAPPLICATION_JSON);
-  finally
-    JSONBody.Free;
-  end;
-
-  // Execute request asynchronously
-  try
-    RESTRequest1.ExecuteAsync(DoExecute, True, True, nil);
-  except
-    on E: Exception do
-    begin
-      HandleError(E);
-    end;
-  end;
-end;
-
-procedure TLoginForm.DoExecute;
-begin
-
-  begin
-    try
-      if RESTResponse1.StatusCode = 200 then
-      begin
-        Token := RESTResponse1.JSONValue.GetValue<string>('token');
-        ModalResult := mrOk;
-        Exit;
-      end
-      else
-      begin
-        HandleError(nil);
-      end;
-    except
-      on E: Exception do
-      begin
-        HandleError(E);
-      end;
-    end;
-  end;
-end;
-
-procedure TLoginForm.HandleError(AError: Exception);
-begin
-  OutputDebugString(PChar(AError.Message));
-  FlashRed;
-  EditPassword.Clear;
-end;
-
-procedure TLoginForm.EditUsernameKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-  begin
-    Key := 0;
-    EditPassword.SetFocus;
-  end;
-end;
-
-procedure SetCueBanner(Edit: TEdit; const CueText: string);
-const
-  EM_SETCUEBANNER = $1501;
-begin
-  SendMessage(Edit.Handle, EM_SETCUEBANNER, 0, LPARAM(PChar(CueText)));
-end;
-
-procedure TLoginForm.FormCreate(Sender: TObject);
-begin
-  SetCueBanner(EditUsername, 'user name');
-  SetCueBanner(EditPassword, 'password');
-  RESTClient1.BaseURL := 'http://localhost:8080';
-end;
-
-procedure TLoginForm.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  FlashTimer.Enabled := False;
-  if (ModalResult = mrCancel) then Application.Terminate;
 end;
 
 end.

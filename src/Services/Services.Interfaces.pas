@@ -17,7 +17,11 @@ type
     ['{C47DFAD4-5CF7-42DB-B6A0-67832D7791AA}']
     function GetOrders: TJSONArray;
     function GetCustomerScore(CustomerId: Integer): Double;
-    // Add Create/Edit/Delete as needed
+  end;
+
+  IUserService = interface
+    ['{B49AAFC7-00FA-421D-ABBD-131703DD0A84}']
+    function GetUsers: TJSONArray;
   end;
 
 implementation
