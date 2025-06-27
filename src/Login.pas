@@ -8,7 +8,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, REST.Types, REST.Client,
   Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ExtCtrls, System.JSON,
   Services.AuthService, Services.Interfaces,
-  Spring.Container
+  Spring.Container,
+  Utils
   ;
 
 type
@@ -49,10 +50,18 @@ implementation
 
 uses Main;
 
+
 constructor TLoginForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAuthService := GlobalContainer.Resolve<IAuthService>;
+end;
+
+procedure TLoginForm.FormCreate(Sender: TObject);
+begin
+  SetCueBanner(EditUsername, 'user name');
+  SetCueBanner(EditPassword, 'password');
+  RESTClient1.BaseURL := 'http://localhost:8080';
 end;
 
 procedure TLoginForm.BtnLoginClick(Sender: TObject);
@@ -79,20 +88,6 @@ begin
     Key := 0;
     EditPassword.SetFocus;
   end;
-end;
-
-procedure SetCueBanner(Edit: TEdit; const CueText: string);
-const
-  EM_SETCUEBANNER = $1501;
-begin
-  SendMessage(Edit.Handle, EM_SETCUEBANNER, 0, LPARAM(PChar(CueText)));
-end;
-
-procedure TLoginForm.FormCreate(Sender: TObject);
-begin
-  SetCueBanner(EditUsername, 'user name');
-  SetCueBanner(EditPassword, 'password');
-  RESTClient1.BaseURL := 'http://localhost:8080';
 end;
 
 procedure TLoginForm.FormClose(Sender: TObject; var Action: TCloseAction);

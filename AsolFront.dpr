@@ -13,16 +13,19 @@ uses
   OrderDetailFrame in 'src\OrderDetailFrame.pas' {OrderDetail: TFrame},
   OrderListFrame in 'src\OrderListFrame.pas' {OrderList: TFrame},
   UserDetailFrame in 'src\UserDetailFrame.pas' {UserDetail: TFrame},
-  UserListFrame in 'src\UserListFrame.pas' {UserList: TFrame};
+  UserListFrame in 'src\UserListFrame.pas' {UserList: TFrame},
+  FrameHost in 'src\FrameHost.pas',
+  FrameRegistry in 'src\FrameRegistry.pas',
+  Utils in 'src\Utils.pas';
 
 {$R *.res}
 
 var
-  // MainForm: TMain;
   LoginDlg: TLoginForm;
 begin
   Application.Initialize;
-  RegisterServices;
+  Bootstrap.Initialize;
+
   Application.CreateForm(TMainForm, MainForm);
   Application.MainFormOnTaskbar := False;
   Application.ShowMainForm := False;

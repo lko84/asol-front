@@ -4,14 +4,15 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost;
 
 type
-  TOrderDetail = class(TFrame)
+  TOrderDetail = class(TFrame, IFrameHost)
   private
     { Private declarations }
   public
     constructor Create(AOwner: TComponent);
+    function GetFrame: TFrame;
   end;
 
 implementation
@@ -24,5 +25,9 @@ begin
 
 end;
 
+function TOrderDetail.GetFrame: TFrame;
+begin
+  Result := Self;
+end;
 
 end.

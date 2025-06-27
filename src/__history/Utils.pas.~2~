@@ -1,0 +1,20 @@
+unit Utils;
+
+interface
+
+uses Winapi.Windows, Winapi.Messages, Vcl.StdCtrls, Vcl.Controls;
+
+procedure SetCueBanner(Control: TWinControl; const CueText: string);
+
+implementation
+
+const
+  EM_SETCUEBANNER = $1501;
+
+procedure SetCueBanner(Control: TWinControl; const CueText: string);
+begin
+  if (Control is TEdit) or (Control is TComboBox) then
+    SendMessage(Control.Handle, EM_SETCUEBANNER, 0, LPARAM(PChar(CueText)));
+end;
+
+end.

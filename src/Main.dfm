@@ -10,56 +10,53 @@ object MainForm: TMainForm
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  Padding.Left = 4
-  Padding.Top = 4
-  Padding.Right = 4
-  Padding.Bottom = 4
-  Menu = MainMenu1
   Visible = True
   TextHeight = 15
   object PageControlMain: TPageControl
-    Left = 148
-    Top = 4
-    Width = 472
-    Height = 433
-    Align = alRight
+    Left = 188
+    Top = 0
+    Width = 436
+    Height = 441
+    Align = alClient
     TabOrder = 0
   end
-  object Button1: TButton
-    Left = 48
-    Top = 184
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
+  object Drawer: TPanel
+    Left = 185
+    Top = 0
+    Width = 3
+    Height = 441
+    Cursor = crHandPoint
+    Align = alLeft
+    Caption = '.'
     TabOrder = 1
-    OnClick = Button1Click
+    OnClick = DrawerClick
   end
-  object Button2: TButton
-    Left = 48
-    Top = 215
-    Width = 75
-    Height = 25
-    Caption = 'Button2'
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 185
+    Height = 441
+    Align = alLeft
+    BevelOuter = bvNone
     TabOrder = 2
-  end
-  object Button3: TButton
-    Left = 48
-    Top = 246
-    Width = 75
-    Height = 25
-    Caption = 'Button3'
-    TabOrder = 3
-  end
-  object Button4: TButton
-    Left = 48
-    Top = 277
-    Width = 75
-    Height = 25
-    Caption = 'Button4'
-    TabOrder = 4
-  end
-  object MainMenu1: TMainMenu
-    Left = 80
-    Top = 96
+    object EditSearch: TEdit
+      Left = 5
+      Top = 408
+      Width = 174
+      Height = 25
+      TabOrder = 0
+      OnChange = EditSearchChange
+      OnKeyDown = EditSearchKeyDown
+    end
+    object ListBoxResults: TListBox
+      Left = 5
+      Top = 308
+      Width = 174
+      Height = 94
+      ItemHeight = 15
+      TabOrder = 1
+      OnClick = ListBoxResultsClick
+      OnKeyDown = ListBoxResultsKeyDown
+    end
   end
 end

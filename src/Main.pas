@@ -4,18 +4,31 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ComCtrls, Vcl.StdCtrls, OrderListFrame;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ComCtrls, Vcl.StdCtrls,
+  Vcl.ExtCtrls, Vcl.WinXCtrls,
+  Spring.Container,
+  FrameRegistry, Utils
+  ;
 
 type
   TMainForm = class(TForm)
-    MainMenu1: TMainMenu;
     PageControlMain: TPageControl;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
-    procedure OpenTab(const Title: string; FrameClass: TFrame);
-    procedure Button1Click(Sender: TObject);
+    Panel1: TPanel;
+    Drawer: TPanel;
+    EditSearch: TEdit;
+    ListBoxResults: TListBox;
+    constructor Create(AOwner: TComponent);
+    procedure FormCreate(Sender: TObject);
+    procedure OpenTab(const Title: string; Frame: TFrame);
+    procedure AdjustListBoxHeight;
+    procedure ToggleDrawer;
+    procedure DrawerClick(Sender: TObject);
+    procedure EditSearchChange(Sender: TObject);
+    procedure ListBoxResultsClick(Sender: TObject);
+    procedure EditSearchKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ListBoxResultsKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -24,22 +37,128 @@ type
 
 var
   MainForm: TMainForm;
+  DrawerOpen: Boolean = True;
 
 implementation
 
 {$R *.dfm}
 
-
-
-procedure TMainForm.Button1Click(Sender: TObject);
+constructor TMainForm.Create(AOwner: TComponent);
 begin
-  OpenTab('Orders', TOrderList.Create(self));
+  inherited Create(AOwner);
 end;
 
-procedure TMainForm.OpenTab(const Title: string; FrameClass: TFrame);
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  SetCueBanner(EditSearch, 'Open dialog...');
+end;
+
+procedure TMainForm.EditSearchChange(Sender: TObject);
+var
+  Matches: TArray<string>;
+  Match: string;
+begin
+  ListBoxResults.Items.Clear;
+  if Length(EditSearch.Text) < 1 then
+  begin
+    ListBoxResults.Visible := False;
+    Exit;
+  end;
+
+  Matches := TFrameRegistry.Instance.Search(EditSearch.Text);
+  for Match in Matches do
+    ListBoxResults.Items.Add(Match);
+
+  AdjustListBoxHeight;
+  ListBoxResults.Visible := Length(Matches) > 0;
+end;
+
+procedure TMainForm.EditSearchKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+    case Key of
+    VK_DOWN:
+      if ListBoxResults.Visible and (ListBoxResults.Items.Count > 0) then
+      begin
+        ListBoxResults.SetFocus;
+        ListBoxResults.ItemIndex := 0;
+      end;
+    VK_RETURN:
+      if ListBoxResults.Visible and (ListBoxResults.Items.Count > 0) then
+      begin
+        DrawerClick(sender);
+        Key := 0; // prevent beep
+      end;
+    VK_ESCAPE:
+      ListBoxResults.Visible := False;
+  end;
+end;
+
+procedure TMainForm.ListBoxResultsClick(Sender: TObject);
+begin
+  if ListBoxResults.ItemIndex >= 0 then
+  begin
+    var displayname := ListBoxResults.Items[ListBoxResults.ItemIndex];
+    var key := TFrameRegistry.Instance.GetKey(displayname);
+    var frame := TFrameRegistry.Instance.get(key);
+
+    OpenTab(displayname, frame); // resolve by key
+    ListBoxResults.Visible := False;
+  end;
+end;
+
+procedure TMainForm.ListBoxResultsKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    VK_RETURN:
+      begin
+        ListBoxResultsClick(sender);
+        Key := 0;
+      end;
+    VK_ESCAPE:
+      begin
+        ListBoxResults.Visible := False;
+        EditSearch.SetFocus;
+      end;
+  end;
+end;
+
+procedure TMainForm.AdjustListBoxHeight;
+const
+  MaxVisibleItems = 8;
+var
+  ItemCount: Integer;
+  ItemHeight, NewHeight: Integer;
+begin
+  ItemCount := ListBoxResults.Items.Count;
+  if ItemCount > MaxVisibleItems then
+    ItemCount := MaxVisibleItems;
+
+  if ItemCount = 0 then
+    NewHeight := 0
+  else
+  begin
+    ItemHeight := ListBoxResults.ItemHeight;
+    NewHeight := ItemCount * ItemHeight + 4; // +4 for border/padding
+  end;
+
+  ListBoxResults.Height := NewHeight;
+
+  // Position ListBox so bottom aligns with EditSearch.Top
+  ListBoxResults.Top := EditSearch.Top - ListBoxResults.Height;
+  ListBoxResults.Left := EditSearch.Left;
+  ListBoxResults.Width := EditSearch.Width;
+end;
+
+procedure TMainForm.DrawerClick(Sender: TObject);
+begin
+  ToggleDrawer;
+end;
+
+procedure TMainForm.OpenTab(const Title: string; Frame: TFrame);
 var
   Tab: TTabSheet;
-  Frame: TFrame;
 begin
   for var i := 0 to PageControlMain.PageCount - 1 do
     if PageControlMain.Pages[i].Caption = Title then
@@ -54,12 +173,24 @@ begin
   Tab.Caption := Title;
 
   // Create frame
-  Frame := FrameClass.Create(Tab);
   Frame.Parent := Tab;
   Frame.Align := alClient;
 
   //PageControlMain.ActivePage := Tab;
 end;
 
+
+procedure TMainForm.ToggleDrawer;
+begin
+  if DrawerOpen then
+  begin
+    Panel1.Width := 0;
+  end
+  else
+  begin
+    Panel1.Width := 200;
+  end;
+  DrawerOpen := not DrawerOpen;
+end;
 
 end.
