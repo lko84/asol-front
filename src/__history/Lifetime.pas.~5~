@@ -1,0 +1,71 @@
+unit Lifetime;
+
+interface
+
+uses  System.JSON, REST.Client, REST.Types, REST.Response.Adapter,
+  System.Classes, System.SysUtils, Services.Interfaces, System.Generics.Collections;
+
+type
+  TLifeTimeState = (ltPreInit, ltInit, ltLogin, ltActive, ltExit);
+
+type
+  TStateChangeCallback = procedure(NewState: TLifeTimeState) of object;
+
+type
+  TLifetimeService = class
+  private
+    class var FInstance: TLifetimeService;
+    FState: TLifeTimeState;
+    FOnStateChange: TList<TStateChangeCallback>;
+    procedure SetState(const Value: TLifeTimeState);
+    function ReadState: TLifeTimeState;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    class function Instance: TLifetimeService;
+
+    procedure RegisterCallback(Callback: TStateChangeCallback);
+
+    property State: TLifeTimeState read ReadState write SetState;
+  end;
+
+implementation
+
+constructor TLifetimeService.Create;
+begin
+  FState := ltPreInit;
+  FOnStateChange := TList<TStateChangeCallback>.Create;
+end;
+
+destructor TLifetimeService.Destroy;
+begin
+  FOnStateChange.Free;
+  inherited;
+end;
+
+procedure TLifetimeService.SetState(const Value: TLifeTimeState);
+var
+  Callback: TStateChangeCallback;
+begin
+  if FState <> Value then
+  begin
+    FState := Value;
+    for Callback in FOnStateChange do
+      Callback(FState);
+  end;
+end;
+
+class function TLifetimeService.Instance: TLifetimeService;
+begin
+  if not Assigned(FInstance) then
+    FInstance := TLifetimeService.Create;
+  Result := FInstance;
+end;
+
+procedure TLifetimeService.RegisterCallback(Callback: TStateChangeCallback);
+begin
+  FOnStateChange.Add(Callback);
+end;
+
+end.

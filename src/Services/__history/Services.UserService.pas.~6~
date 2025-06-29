@@ -1,0 +1,42 @@
+unit Services.UserService;
+
+interface
+
+uses System.JSON, REST.Client, REST.Types, REST.Response.Adapter,
+  System.Classes, System.SysUtils, Services.Interfaces, Dto;
+
+type
+  TUserService = class(TInterfacedObject, IUserService)
+  private
+    FToken: string;
+    FClient: TRESTClient;
+    FRequest: TRESTRequest;
+    FResponse: TRESTResponse;
+  public
+    constructor Create;
+    function GetUsers: TArray<TUser>;
+    function GetUser: TUser;
+  end;
+
+implementation
+
+constructor TUserService.Create;
+begin
+  FClient := TRESTClient.Create('http://localhost:8080');
+  FRequest := TRESTRequest.Create(nil);
+  FResponse := TRESTResponse.Create(nil);
+  FRequest.Client := FClient;
+  FRequest.Response := FResponse;
+end;
+
+function TUserService.GetUsers: TArray<TUser>;
+begin
+//
+end;
+
+function TUserService.GetUser: TUser;
+begin
+
+end;
+
+end.

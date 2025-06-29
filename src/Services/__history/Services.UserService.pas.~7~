@@ -1,0 +1,91 @@
+unit Services.UserService;
+
+interface
+
+uses System.JSON, REST.Client, REST.Types, REST.Response.Adapter,
+  System.Classes, System.SysUtils, Services.Interfaces, Dto;
+
+type
+  TUserService = class(TInterfacedObject, IUserService)
+  private
+    FToken: string;
+    FClient: TRESTClient;
+    FRequest: TRESTRequest;
+    FResponse: TRESTResponse;
+  public
+    constructor Create;
+    function GetUsers: TArray<TUser>;
+    function GetUser: TUser(UserId: String);
+  end;
+
+implementation
+
+constructor TUserService.Create;
+begin
+  FClient := TRESTClient.Create('http://localhost:8080');
+  FRequest := TRESTRequest.Create(nil);
+  FResponse := TRESTResponse.Create(nil);
+  FRequest.Client := FClient;
+  FRequest.Response := FResponse;
+end;
+
+function TUserService.GetUsers: TArray<TUser>;
+begin
+//
+end;
+
+function TUserService.GetUser(UserId: String): TUser;
+var
+  JsonObj: TJSONObject;
+begin
+  FRequest.ResetToDefaults;
+
+  FRequest.Resource := 'auth/login';
+  FRequest.Method := rmPOST;
+  FRequest.Client := FClient;
+  FRequest.Response := FResponse;
+  // FRequest.ContentType := 'application/json';
+
+  // Build JSON manually
+  JsonObj := TJSONObject.Create;
+  try
+    JsonObj.AddPair('username', Username);
+    JsonObj.AddPair('password', Password);
+    FRequest.Body.ClearBody;
+    FRequest.AddBody(JsonObj.ToJSON, ctAPPLICATION_JSON);
+  finally
+    JsonObj.Free;
+  end;
+
+  FRequest.Execute;
+
+  if FResponse.StatusCode = 200 then
+  begin
+    var UserSession := TUserSession.Create;
+    var JSON := TJSONObject.ParseJSONValue(FResponse.Content);
+
+    UserSession.Token := JSON.GetValue<string>('token');
+    UserSession.UserId := JSON.GetValue<string>('userid');
+    UserSession.Username := JSON.GetValue<string>('username');
+
+    var RolesArray := JSON.GetValue<TJSONArray>('roles');
+    SetLength(UserSession.Roles, RolesArray.Count);
+    for var I := 0 to RolesArray.Count - 1 do
+    begin
+      var RoleStr := RolesArray.Items[I].Value;
+      try
+        UserSession.Roles[I] := StringToUserRole(RoleStr);
+      except
+        on E: EConvertError do
+          raise Exception.CreateFmt('Unknown role: %s', [RoleStr]);
+      end;
+    end;
+
+
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+end.

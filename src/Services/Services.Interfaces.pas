@@ -4,13 +4,14 @@ interface
 
 uses
   System.JSON, REST.Client, REST.Types, REST.Response.Adapter,
-  System.Classes, System.SysUtils;
+  System.Classes, System.SysUtils, System.Generics.Collections, Dto;
 
 type
   IAuthService = interface
     ['{A2C503EF-BDC5-4724-B249-B9F2F842D0FD}']
-    function Login(const Username, Password: string): Boolean;
-    function GetToken: string;
+    function TryLogin(const Username, Password: string): Boolean;
+    function GetSession: TUserSession;
+    procedure AddAuthHeader(Request: TRESTRequest);
   end;
 
   IOrderService = interface
@@ -21,7 +22,8 @@ type
 
   IUserService = interface
     ['{B49AAFC7-00FA-421D-ABBD-131703DD0A84}']
-    function GetUsers: TJSONArray;
+    function GetUsers: TArray<TUser>;
+    function GetUser(UserId: string): TUser;
   end;
 
 implementation

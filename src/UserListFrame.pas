@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost, Dto, System.Generics.Collections;
 
 type
   TUserList = class(TFrame, IFrameHost)
@@ -21,7 +21,6 @@ implementation
 
 constructor TUserList.Create(AOwner: TComponent);
 begin
-  inherited;
 
 end;
 

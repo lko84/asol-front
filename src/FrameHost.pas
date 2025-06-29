@@ -2,7 +2,7 @@ unit FrameHost;
 
 interface
 
-uses Vcl.Forms;
+uses Vcl.Forms, Dto;
 
 type
   IFrameHost = interface

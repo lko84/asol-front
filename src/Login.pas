@@ -9,7 +9,7 @@ uses
   Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ExtCtrls, System.JSON,
   Services.AuthService, Services.Interfaces,
   Spring.Container,
-  Utils
+  Utils, Lifetime
   ;
 
 type
@@ -66,8 +66,11 @@ end;
 
 procedure TLoginForm.BtnLoginClick(Sender: TObject);
 begin
-  if FAuthService.Login(EditUsername.Text, EditPassword.Text) then
-    ModalResult:=mrOk
+  if FAuthService.TryLogin(EditUsername.Text, EditPassword.Text) then
+  begin
+    ModalResult:=mrOk;
+    TLifetimeService.Instance.SetState(ltLogin);
+  end
   else
     FlashRed;
     EditPassword.Clear

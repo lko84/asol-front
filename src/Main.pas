@@ -1,4 +1,4 @@
-unit Main;
+﻿unit Main;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ComCtrls, Vcl.StdCtrls,
   Vcl.ExtCtrls, Vcl.WinXCtrls,
   Spring.Container,
-  FrameRegistry, Utils
+  FrameRegistry, Utils, Lifetime
   ;
 
 type
@@ -17,8 +17,9 @@ type
     Drawer: TPanel;
     EditSearch: TEdit;
     ListBoxResults: TListBox;
-    constructor Create(AOwner: TComponent);
     procedure FormCreate(Sender: TObject);
+    procedure Initialize;
+    procedure OnAppStateChange(NewState: TLifeTimeState);
     procedure OpenTab(const Title: string; Frame: TFrame);
     procedure AdjustListBoxHeight;
     procedure ToggleDrawer;
@@ -29,6 +30,8 @@ type
       Shift: TShiftState);
     procedure ListBoxResultsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure PageControlMainMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private declarations }
   public
@@ -43,14 +46,22 @@ implementation
 
 {$R *.dfm}
 
-constructor TMainForm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   SetCueBanner(EditSearch, 'Open dialog...');
+  TLifetimeService.Instance.RegisterCallback(OnAppStateChange);
+end;
+
+procedure TMainForm.Initialize;
+begin
+  for var name in TFrameRegistry.Instance.getDisplayNames do
+  ListBoxResults.items.Add(name)
+end;
+
+procedure TMainForm.OnAppStateChange(NewState: TLifeTimeState);
+begin
+  if NewState = ltLogin then
+    Initialize;
 end;
 
 procedure TMainForm.EditSearchChange(Sender: TObject);
@@ -65,11 +76,11 @@ begin
     Exit;
   end;
 
-  Matches := TFrameRegistry.Instance.Search(EditSearch.Text);
+  Matches := TFrameRegistry.Instance.findDisplayName(EditSearch.Text);
   for Match in Matches do
     ListBoxResults.Items.Add(Match);
 
-  AdjustListBoxHeight;
+  // AdjustListBoxHeight;
   ListBoxResults.Visible := Length(Matches) > 0;
 end;
 
@@ -80,8 +91,18 @@ begin
     VK_DOWN:
       if ListBoxResults.Visible and (ListBoxResults.Items.Count > 0) then
       begin
-        ListBoxResults.SetFocus;
-        ListBoxResults.ItemIndex := 0;
+        if ListBoxResults.ItemIndex = -1 then
+        ListBoxResults.ItemIndex := 0
+        else if ListBoxResults.ItemIndex+1<ListBoxResults.Items.Count then
+        ListBoxResults.ItemIndex := ListBoxResults.ItemIndex+1;
+      end;
+     VK_UP:
+      if ListBoxResults.Visible and (ListBoxResults.Items.Count > 0) then
+      begin
+        if ListBoxResults.ItemIndex = -1 then
+        ListBoxResults.ItemIndex := ListBoxResults.Items.Count-1
+        else if ListBoxResults.ItemIndex>0 then
+        ListBoxResults.ItemIndex := ListBoxResults.ItemIndex-1;
       end;
     VK_RETURN:
       if ListBoxResults.Visible and (ListBoxResults.Items.Count > 0) then
@@ -104,6 +125,7 @@ begin
 
     OpenTab(displayname, frame); // resolve by key
     ListBoxResults.Visible := False;
+    EditSearch.Clear;
   end;
 end;
 
@@ -161,7 +183,7 @@ var
   Tab: TTabSheet;
 begin
   for var i := 0 to PageControlMain.PageCount - 1 do
-    if PageControlMain.Pages[i].Caption = Title then
+    if PageControlMain.Pages[i].Caption = Title + ' ❌' then
     begin
       PageControlMain.ActivePage := PageControlMain.Pages[i];
       Exit;
@@ -170,7 +192,7 @@ begin
   // Create new tab
   Tab := TTabSheet.Create(PageControlMain);
   Tab.PageControl := PageControlMain;
-  Tab.Caption := Title;
+  Tab.Caption := Title + ' ❌';
 
   // Create frame
   Frame.Parent := Tab;
@@ -179,6 +201,24 @@ begin
   //PageControlMain.ActivePage := Tab;
 end;
 
+procedure TMainForm.PageControlMainMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  i: Integer;
+  TabRect: TRect;
+begin
+  for i := 0 to PageControlMain.PageCount - 1 do
+  begin
+    TabRect := PageControlMain.TabRect(i);
+
+    // Rectangle for the "x" button area
+    if PtInRect(Rect(TabRect.Right - 20, TabRect.Top + 2, TabRect.Right - 5, TabRect.Bottom - 2), Point(X, Y)) then
+    begin
+      PageControlMain.Pages[i].Free; // Remove the tab
+      Break;
+    end;
+  end;
+end;
 
 procedure TMainForm.ToggleDrawer;
 begin

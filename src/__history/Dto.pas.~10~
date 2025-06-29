@@ -1,0 +1,37 @@
+unit Dto;
+
+interface
+
+uses System.TypInfo;
+
+type
+TUserRole = (ADMIN, USER);
+function StringToUserRole(const S: string): TUserRole;
+
+type
+TUser = class
+  UserId: string;
+  Fullname: String;
+  Email: String;
+  Phone: String;
+  Active: Boolean;
+end;
+
+type
+TUserSession = class
+  Token: string;
+  UserId: string;
+  Username: string;
+  User: TUser;
+  Roles: TArray<TUserRole>;
+  function HasRole(Role: TUserRole): Boolean;
+end;
+
+implementation
+
+function StringToUserRole(const S: string): TUserRole;
+begin
+  Result := TUserRole(GetEnumValue(TypeInfo(TUserRole), S));
+end;
+
+end.

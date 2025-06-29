@@ -158,6 +158,8 @@
         <DCCReference Include="src\FrameHost.pas"/>
         <DCCReference Include="src\FrameRegistry.pas"/>
         <DCCReference Include="src\Utils.pas"/>
+        <DCCReference Include="src\Lifetime.pas"/>
+        <DCCReference Include="src\Dto.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

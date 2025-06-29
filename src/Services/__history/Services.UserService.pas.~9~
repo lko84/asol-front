@@ -1,0 +1,67 @@
+unit Services.UserService;
+
+interface
+
+uses System.JSON, REST.Client, REST.Types, REST.Response.Adapter,
+  System.Classes, System.SysUtils, Services.Interfaces, Spring.Container, Dto;
+
+type
+  TUserService = class(TInterfacedObject, IUserService)
+  private
+    FAuthService: IAuthService;
+    FClient: TRESTClient;
+    FRequest: TRESTRequest;
+    FResponse: TRESTResponse;
+  public
+    constructor Create;
+    function GetUsers: TArray<TUser>;
+    function GetUser(UserId: string): TUser;
+  end;
+
+implementation
+
+constructor TUserService.Create;
+begin
+  FAuthService := GlobalContainer.Resolve<IAuthService>;
+  FClient := TRESTClient.Create('http://localhost:8080');
+  FRequest := TRESTRequest.Create(nil);
+  FResponse := TRESTResponse.Create(nil);
+  FRequest.Client := FClient;
+  FRequest.Response := FResponse;
+end;
+
+function TUserService.GetUsers: TArray<TUser>;
+begin
+//
+end;
+
+function TUserService.GetUser(UserId: string): TUser;
+begin
+  FRequest.ResetToDefaults;
+
+  FRequest.Resource := 'api/users/'+UserId;
+  FRequest.Method := rmGet;
+  FRequest.Client := FClient;
+  FRequest.Response := FResponse;
+
+  FRequest.Body.ClearBody;
+  FRequest.AddParameter('Authorization', 'Bearer ' + FAuthService.GetSession.Token, TRESTRequestParameterKind.pkHTTPHEADER);
+  FRequest.Execute;
+
+  if FResponse.StatusCode = 200 then
+  begin
+    var User := TUser.Create;
+    var JSON := TJSONObject.ParseJSONValue(FResponse.Content);
+
+    User.UserId := JSON.GetValue<string>('userId');
+    User.Fullname := JSON.GetValue<string>('fullName');
+    User.Email := JSON.GetValue<string>('email');
+    User.Phone := JSON.GetValue<string>('phone');
+    User.Active := JSON.GetValue<Boolean>('active');
+
+    Result := User;
+  end;
+  Result := nil;
+end;
+
+end.

@@ -2,18 +2,25 @@ unit FrameRegistry;
 
 interface
 
-uses System.Generics.Collections, System.SysUtils, Spring.Container, FrameHost, Vcl.Forms;
+uses System.Generics.Collections, System.SysUtils, Spring.Container, FrameHost, Vcl.Forms, Dto;
+
+type
+  TFrameInfo = record
+    Key: string;
+    RequiredRoles: TArray<TUserRole>;
+  end;
 
 type
   TFrameRegistry = class
   private
-    var FMap: TDictionary<string, string>; // DisplayName ? Key
+    var FMap: TDictionary<string, TFrameInfo>;
     class var FInstance: TFrameRegistry;
   public
    destructor Destroy;
    class function Instance: TFrameRegistry;
-   procedure Register<TFrameType>(const Key, DisplayName: string);
-   function Search(const Partial: string): TArray<string>;
+   procedure Register<TFrameType>(const Key, DisplayName: string; RequiredRoles: TArray<TUserRole>);
+   function findDisplayName(const Partial: string): TArray<string>;
+   function getDisplayNames: TArray<string>;
    function GetKey(DisplayName: string): string;
    function get(Key: string): TFrame;
   private
@@ -24,7 +31,7 @@ implementation
 
 constructor TFrameRegistry.Create;
 begin
-  FMap := TDictionary<string, string>.Create;
+  FMap := TDictionary<string, TFrameInfo>.Create;
 end;
 
 destructor TFrameRegistry.Destroy;
@@ -39,28 +46,53 @@ begin
   Result := FInstance;
 end;
 
-procedure TFrameRegistry.Register<TFrameType>(const Key, DisplayName: string);
+procedure TFrameRegistry.Register<TFrameType>(const Key, DisplayName: string; RequiredRoles: TArray<TUserRole>);
+var
+  Instance: IFrameHost;
+  Roles: TArray<TUserRole>;
+  Info: TFrameInfo;
 begin
-  FMap.AddOrSetValue(DisplayName, Key);
   GlobalContainer.RegisterType<TFrameType>.Implements<IFrameHost>(Key);
+  Info.Key := Key;
+  Info.RequiredRoles := Roles;
+  FMap.AddOrSetValue(DisplayName, Info);
 end;
 
 function TFrameRegistry.GetKey(DisplayName: string): string;
+var
+  Info: TFrameInfo;
 begin
-  if not FMap.TryGetValue(DisplayName, Result) then
+  if FMap.TryGetValue(DisplayName, Info) then
+    Result := Info.Key
+  else
     Result := '';
 end;
 
-function TFrameRegistry.Search(const Partial: string): TArray<string>;
+function TFrameRegistry.findDisplayName(const Partial: string): TArray<string>;
 var
   DisplayName: string;
+  Info: TFrameInfo;
+  Session: TUserSession;
 begin
   Result := [];
+  Session := GlobalContainer.Resolve<TUserSession>;
 
   for DisplayName in FMap.Keys do
   begin
-    if LowerCase(DisplayName).Contains(Partial.ToLower) then Result := Result + [DisplayName];
+    Info := FMap[DisplayName];
+
+    if Session.HasAnyRole(Info.RequiredRoles) and
+       LowerCase(DisplayName).Contains(Partial.ToLower) then
+    begin
+      Result := Result + [DisplayName];
+    end;
   end;
+end;
+
+function TFrameRegistry.getDisplayNames: TArray<string>;
+begin
+  Result := FMap.Keys.ToArray;
+  TArray.Sort<string>(Result);
 end;
 
 function TFrameRegistry.get(Key: string): TFrame;

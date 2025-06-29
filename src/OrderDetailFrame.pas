@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost, Dto;
 
 type
   TOrderDetail = class(TFrame, IFrameHost)
@@ -21,7 +21,6 @@ implementation
 
 constructor TOrderDetail.Create(AOwner: TComponent);
 begin
-  inherited;
 
 end;
 

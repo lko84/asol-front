@@ -10,18 +10,21 @@ object MainForm: TMainForm
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Padding.Left = 4
   Visible = True
+  OnCreate = FormCreate
   TextHeight = 15
   object PageControlMain: TPageControl
-    Left = 188
+    Left = 192
     Top = 0
-    Width = 436
+    Width = 432
     Height = 441
     Align = alClient
     TabOrder = 0
+    OnMouseDown = PageControlMainMouseDown
   end
   object Drawer: TPanel
-    Left = 185
+    Left = 189
     Top = 0
     Width = 3
     Height = 441
@@ -32,27 +35,31 @@ object MainForm: TMainForm
     OnClick = DrawerClick
   end
   object Panel1: TPanel
-    Left = 0
+    Left = 4
     Top = 0
     Width = 185
     Height = 441
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 2
+    DesignSize = (
+      185
+      441)
     object EditSearch: TEdit
-      Left = 5
-      Top = 408
-      Width = 174
-      Height = 25
+      Left = 0
+      Top = 8
+      Width = 179
+      Height = 23
       TabOrder = 0
       OnChange = EditSearchChange
       OnKeyDown = EditSearchKeyDown
     end
     object ListBoxResults: TListBox
-      Left = 5
-      Top = 308
-      Width = 174
-      Height = 94
+      Left = 0
+      Top = 37
+      Width = 179
+      Height = 404
+      Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 15
       TabOrder = 1
       OnClick = ListBoxResultsClick

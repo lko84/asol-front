@@ -3,21 +3,28 @@ unit Services.AuthService;
 interface
 
 uses
-  System.JSON, REST.Client, REST.Types, REST.Response.Adapter,
-  System.Classes, System.SysUtils, Services.Interfaces;
+  System.JSON, REST.Client, REST.Types, REST.Response.Adapter, Winapi.Windows,
+  System.Classes, System.SysUtils, Services.Interfaces, Spring.Container, Dto, Lifetime;
 
+type
+  ILoginObserver = interface
+    ['{E812A7E6-FA59-41F5-8DAE-2C246D474C63}'] // GUID required
+    procedure OnLoginSuccess(Success: Boolean);
+  end;
 type
   TAuthService = class(TInterfacedObject, IAuthService)
   private
-    FToken: string;
+    UserSession: TUserSession;
     FClient: TRESTClient;
     FRequest: TRESTRequest;
     FResponse: TRESTResponse;
   public
     constructor Create;
-    function Login(const Username, Password: string): Boolean;
-    function GetToken: string;
+    function TryLogin(const Username, Password: string): Boolean;
+    function GetSession: TUserSession;
+    procedure AddAuthHeader(Request: TRESTRequest);
   end;
+
 
   implementation
 
@@ -30,7 +37,7 @@ begin
   FRequest.Response := FResponse;
 end;
 
-function TAuthService.Login(const Username, Password: string): Boolean;
+function TAuthService.TryLogin(const Username, Password: string): Boolean;
 var
   JsonObj: TJSONObject;
 begin
@@ -40,9 +47,7 @@ begin
   FRequest.Method := rmPOST;
   FRequest.Client := FClient;
   FRequest.Response := FResponse;
-  // FRequest.ContentType := 'application/json';
 
-  // Build JSON manually
   JsonObj := TJSONObject.Create;
   try
     JsonObj.AddPair('username', Username);
@@ -57,15 +62,44 @@ begin
 
   if FResponse.StatusCode = 200 then
   begin
-    FToken := TJSONObject.ParseJSONValue(FResponse.Content)
-                  .GetValue<string>('token');
+    UserSession := TUserSession.Create;
+    var JSON := TJSONObject.ParseJSONValue(FResponse.Content);
+
+    UserSession.Token := JSON.GetValue<string>('token');
+    UserSession.UserId := JSON.GetValue<string>('userid');
+    UserSession.Username := JSON.GetValue<string>('username');
+
+    var RolesArray := JSON.GetValue<TJSONArray>('roles');
+    SetLength(UserSession.Roles, RolesArray.Count);
+    for var I := 0 to RolesArray.Count - 1 do
+    begin
+      var RoleStr := RolesArray.Items[I].Value;
+      try
+        UserSession.Roles[I] := StringToUserRole(RoleStr);
+      except
+        on E: EConvertError do
+          raise Exception.CreateFmt('Unknown role: %s', [RoleStr]);
+      end;
+    end;
+
+    var UserService:= GlobalContainer.Resolve<IUserService>;
+    UserSession.User:=UserService.GetUser(UserSession.UserId);
+
     Result := True;
   end
   else
     Result := False;
 end;
-function TAuthService.GetToken: string;
+
+function TAuthService.GetSession: TUserSession;
 begin
-  Result := FToken;
+  Result := UserSession;
 end;
+
+procedure TAuthService.AddAuthHeader(Request: TRESTRequest);
+begin
+  If Assigned(UserSession) then
+  Request.AddParameter('Authorization', 'Bearer ' + UserSession.Token, pkHTTPHEADER, [poDoNotEncode]);
+end;
+
 end.

@@ -1,0 +1,29 @@
+unit Dto;
+
+interface
+
+type
+TUserRole = (ADMIN, USER);
+
+type
+TUser = class
+  UserId: string;
+  Fullname: String;
+  Email: String;
+  Phone: String;
+  Active: Boolean;
+end;
+
+type
+TUserSession = class
+  UserId: string;
+  Username: string;
+  User: TUser;
+  Roles: TArray<TUserRole>;
+  FToken: string;
+  function HasRole(Role: TUserRole): Boolean;
+end;
+
+implementation
+
+end.

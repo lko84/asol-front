@@ -16,7 +16,9 @@ uses
   UserListFrame in 'src\UserListFrame.pas' {UserList: TFrame},
   FrameHost in 'src\FrameHost.pas',
   FrameRegistry in 'src\FrameRegistry.pas',
-  Utils in 'src\Utils.pas';
+  Utils in 'src\Utils.pas',
+  Lifetime in 'src\Lifetime.pas',
+  Dto in 'src\Dto.pas';
 
 {$R *.res}
 

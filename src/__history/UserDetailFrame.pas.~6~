@@ -1,0 +1,33 @@
+unit UserDetailFrame;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost, Dto;
+
+type
+  TUserDetail = class(TFrame, IFrameHost)
+  private
+    { Private declarations }
+  public
+    constructor Create(AOwner: TComponent);
+    function GetFrame: TFrame;
+    function GetRequiredRoles: TArray<TUserRole>;
+  end;
+
+implementation
+
+{$R *.dfm}
+
+function TUserDetail.GetFrame: TFrame;
+begin
+  Result := Self;
+end;
+
+function TUserDetail.GetRequiredRoles: TArray<TUserRole>;
+begin
+  Result := TArray<TUserRole>.Create(ANY);
+end;
+
+end.

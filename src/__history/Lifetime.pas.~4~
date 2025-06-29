@@ -1,0 +1,29 @@
+unit Lifetime;
+
+interface
+
+type
+  TLifetimeService = class
+  private
+    class var FInstance: TLifetimeService;
+  public
+   class function Instance: TLifetimeService;
+  private
+   constructor Create;
+  end;
+
+implementation
+
+constructor TLifetimeService.create;
+begin
+  //
+end;
+
+class function TLifetimeService.Instance: TLifetimeService;
+begin
+  if not Assigned(FInstance) then
+  FInstance := TLifetimeService.Create;
+  Result := FInstance;
+end;
+
+end.
