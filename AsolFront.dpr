@@ -18,7 +18,8 @@ uses
   FrameRegistry in 'src\FrameRegistry.pas',
   Utils in 'src\Utils.pas',
   Lifetime in 'src\Lifetime.pas',
-  Dto in 'src\Dto.pas';
+  Dto in 'src\Dto.pas',
+  Buttons in 'src\Buttons.pas' {BtnFrame: TFrame};
 
 {$R *.res}
 

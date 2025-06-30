@@ -1,0 +1,39 @@
+unit OrderListFrame;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, FrameHost, Dto,
+  Vcl.ExtCtrls, Vcl.ComCtrls, Buttons;
+
+type
+  TOrderList = class(TFrame, IFrameHost)
+    O001MasterPanel: TPanel;
+    O001DetailPanel: TPanel;
+    O001DetailListView: TListView;
+    O001MasterListView: TListView;
+    Splitter1: TSplitter;
+    BtnFrame1: TBtnFrame;
+  private
+    { Private declarations }
+  public
+    constructor Create(AOwner: TComponent); override;
+    function GetFrame: TFrame;
+  end;
+
+implementation
+
+{$R *.dfm}
+
+constructor TOrderList.Create(AOwner: TComponent);
+begin
+inherited;
+end;
+
+function TOrderList.GetFrame: TFrame;
+begin
+  Result := Self;
+end;
+
+end.

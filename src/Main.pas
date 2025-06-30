@@ -54,7 +54,7 @@ end;
 
 procedure TMainForm.Initialize;
 begin
-  for var name in TFrameRegistry.Instance.getDisplayNames do
+  for var name in TFrameRegistry.Instance.findDisplayName('') do
   ListBoxResults.items.Add(name)
 end;
 
@@ -124,8 +124,6 @@ begin
     var frame := TFrameRegistry.Instance.get(key);
 
     OpenTab(displayname, frame); // resolve by key
-    ListBoxResults.Visible := False;
-    EditSearch.Clear;
   end;
 end;
 
@@ -198,7 +196,7 @@ begin
   Frame.Parent := Tab;
   Frame.Align := alClient;
 
-  //PageControlMain.ActivePage := Tab;
+  PageControlMain.ActivePage := Tab;
 end;
 
 procedure TMainForm.PageControlMainMouseDown(Sender: TObject;

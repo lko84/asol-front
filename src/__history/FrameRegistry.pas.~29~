@@ -1,0 +1,95 @@
+unit FrameRegistry;
+
+interface
+
+uses System.Generics.Collections, System.SysUtils, Spring.Container, FrameHost, Vcl.Forms, Dto, Services.Interfaces;
+
+type
+  TFrameInfo = record
+    Key: string;
+    RequiredRoles: TArray<TUserRole>;
+  end;
+
+type
+  TFrameRegistry = class
+  private
+    var FMap: TDictionary<string, TFrameInfo>;
+    class var FInstance: TFrameRegistry;
+  public
+   destructor Destroy;
+   class function Instance: TFrameRegistry;
+   procedure Register<TFrameType>(const Key, DisplayName: string; RequiredRoles: TArray<TUserRole>);
+   function findDisplayName(const Partial: string): TArray<string>;
+   function GetKey(DisplayName: string): string;
+   function get(Key: string): TFrame;
+  private
+   constructor Create;
+  end;
+
+implementation
+
+constructor TFrameRegistry.Create;
+begin
+  FMap := TDictionary<string, TFrameInfo>.Create;
+end;
+
+destructor TFrameRegistry.Destroy;
+begin
+  FMap.Free;
+end;
+
+class function TFrameRegistry.Instance: TFrameRegistry;
+begin
+  if not Assigned(FInstance) then
+    FInstance := TFrameRegistry.Create;
+  Result := FInstance;
+end;
+
+procedure TFrameRegistry.Register<TFrameType>(const Key, DisplayName: string; RequiredRoles: TArray<TUserRole>);
+var
+  Instance: IFrameHost;
+  Info: TFrameInfo;
+begin
+  GlobalContainer.RegisterType<TFrameType>.Implements<IFrameHost>(Key);
+  Info.Key := Key;
+  Info.RequiredRoles := RequiredRoles;
+  FMap.AddOrSetValue(DisplayName, Info);
+end;
+
+function TFrameRegistry.GetKey(DisplayName: string): string;
+var
+  Info: TFrameInfo;
+begin
+  if FMap.TryGetValue(DisplayName, Info) then
+    Result := Info.Key
+  else
+    Result := '';
+end;
+
+function TFrameRegistry.findDisplayName(const Partial: string): TArray<string>;
+var
+  DisplayName: string;
+  Info: TFrameInfo;
+  Session: TUserSession;
+begin
+  Result := [];
+  Session := GlobalContainer.Resolve<IAuthService>.GetSession;
+
+  for DisplayName in FMap.Keys do
+  begin
+    Info := FMap[DisplayName];
+
+    if Session.HasAnyRole(Info.RequiredRoles) and ((Partial = '') or
+       (LowerCase(DisplayName).Contains(Partial.ToLower))) then
+    begin
+      Result := Result + [DisplayName];
+    end;
+  end;
+end;
+
+function TFrameRegistry.get(Key: string): TFrame;
+begin
+  Result := GlobalContainer.Resolve<IFrameHost>(key).GetFrame;
+end;
+
+end.

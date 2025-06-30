@@ -8,12 +8,16 @@ A Windows desktop front end for the Asol Orders Demo back end. Built in Delphi (
   - Username/password inputs
   - JSON-based POST to `/auth/login`
   - RESTClient usage with `ExecuteAsync`
-- Temporary main form with token display
-- Minimal coupling to main UI until login success
+- JWT/Credentials + user info stored after login
+- Main form. Has UserRole filtered form selection, tab system
+- Dynamic form registration
+- (Incomplete) Form for viewing (all) Orders
+- Spring4D based Services
+- State management system
 
 ## How to Use
 
-1. Locally run the monolith back end (`asol-orders-demo\mono`)
+1. Run the monolith back end locally (`asol-orders-demo\mono`)
 2. Run the compiled .\Win32\Debug\AsolFront.exe
 3. A login dialog will appear:
    - Use test credentials from your back end dataset
@@ -21,8 +25,7 @@ A Windows desktop front end for the Asol Orders Demo back end. Built in Delphi (
 
 ## Future Work
 
-- Abstract REST logic into a shared class
-- Store token for future authenticated requests
-- Add error logging and user feedback
-- Add missing forms
-- Style forms
+- Add missing forms, finalize forms
+- Display user info to user
+
+

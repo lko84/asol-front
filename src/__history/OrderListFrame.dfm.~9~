@@ -1,0 +1,87 @@
+object OrderList: TOrderList
+  Left = 0
+  Top = 0
+  Width = 640
+  Height = 480
+  Align = alClient
+  TabOrder = 0
+  object Splitter1: TSplitter
+    Left = 0
+    Top = 233
+    Width = 640
+    Height = 3
+    Cursor = crVSplit
+    Align = alTop
+    ExplicitWidth = 247
+  end
+  object O001MasterPanel: TPanel
+    Left = 0
+    Top = 0
+    Width = 640
+    Height = 233
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'O001MasterPanel'
+    Padding.Left = 3
+    Padding.Top = 3
+    Padding.Right = 3
+    Padding.Bottom = 3
+    TabOrder = 0
+    object O001MasterListView: TListView
+      Left = 3
+      Top = 3
+      Width = 634
+      Height = 227
+      Align = alClient
+      Columns = <
+        item
+          Caption = 'OrderId'
+        end
+        item
+          Caption = 'Customer'
+        end
+        item
+          Caption = 'OrderDate'
+        end
+        item
+          Caption = 'Price'
+        end>
+      TabOrder = 0
+      ExplicitLeft = 400
+      ExplicitTop = 24
+      ExplicitWidth = 250
+      ExplicitHeight = 150
+    end
+  end
+  object O001DetailPanel: TPanel
+    Left = 0
+    Top = 236
+    Width = 640
+    Height = 244
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'O001DetailPanel'
+    Padding.Left = 3
+    Padding.Top = 3
+    Padding.Right = 3
+    Padding.Bottom = 3
+    TabOrder = 1
+    ExplicitLeft = 376
+    ExplicitTop = 368
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object O001DetailListView: TListView
+      Left = 3
+      Top = 3
+      Width = 634
+      Height = 238
+      Align = alClient
+      Columns = <>
+      TabOrder = 0
+      ExplicitLeft = 320
+      ExplicitTop = 32
+      ExplicitWidth = 250
+      ExplicitHeight = 150
+    end
+  end
+end

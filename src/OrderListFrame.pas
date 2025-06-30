@@ -4,12 +4,20 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, FrameHost, Dto;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, FrameHost, Dto,
+  Vcl.ExtCtrls, Vcl.ComCtrls, Buttons, Services.Interfaces, Spring.Container;
 
 type
   TOrderList = class(TFrame, IFrameHost)
+    O001MasterPanel: TPanel;
+    O001DetailPanel: TPanel;
+    O001DetailListView: TListView;
+    O001MasterListView: TListView;
+    Splitter1: TSplitter;
+    BtnFrame1: TBtnFrame;
+    procedure BtnFrame1BtnReadClick(Sender: TObject);
   private
-    { Private declarations }
+    FOrderService: IOrderService;
   public
     constructor Create(AOwner: TComponent); override;
     function GetFrame: TFrame;
@@ -21,7 +29,20 @@ implementation
 
 constructor TOrderList.Create(AOwner: TComponent);
 begin
+inherited;
+FOrderService := GlobalContainer.Resolve<IOrderService>;
+end;
 
+procedure TOrderList.BtnFrame1BtnReadClick(Sender: TObject);
+begin
+  for var Order in FOrderService.GetOrders do
+  begin
+    var Item:=O001MasterListView.Items.Add;
+    Item.Caption:=Order.orderId;
+    Item.SubItems.Add(Order.Customer.Fullname);
+    Item.SubItems.Add(DateTimeToStr(Order.OrderDate));
+    Item.SubItems.Add(FormatFloat('#,##0.00', 135.5));
+  end;
 end;
 
 function TOrderList.GetFrame: TFrame;

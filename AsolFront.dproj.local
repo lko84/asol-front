@@ -1,41 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.616,C:\Wrk\asol-front\Unit1.pas=C:\Wrk\asol-front\src\Services\Services.Orderservice.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.105,C:\Wrk\asol-front\Unit1.pas=C:\Wrk\asol-front\src\Main.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.600,C:\Wrk\asol-front\Unit1.pas=C:\Wrk\asol-front\src\Services\Services.UserService.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.043,=C:\Wrk\asol-front\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.005,C:\Wrk\asol-front\Unit2.pas=C:\Wrk\asol-front\LoginFormUnit.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.241,C:\Wrk\asol-front\README.md=C:\Wrk\asol-front\Untitled1.md</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.360,C:\Wrk\asol-front\src\Utils.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.031,C:\Wrk\asol-front\Unit1.pas=C:\Wrk\asol-front\src\FrameHost.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.464,=C:\Wrk\asol-front\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.780,=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.031,C:\Wrk\asol-front\src\FrameHost.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.502,C:\Wrk\asol-front\src\Login.pas=C:\Wrk\asol-front\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.005,C:\Wrk\asol-front\LoginFormUnit.dfm=C:\Wrk\asol-front\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.876,=C:\Wrk\asol-front\src\OrderListFrame.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.549,=C:\Wrk\asol-front\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.773,=C:\Wrk\asol-front\src\OrderDetailFrame.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.241,C:\Wrk\asol-front\Untitled1.md=C:\Wrk\asol-front\README.md</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.895,=C:\Wrk\asol-front\Untitled1.md</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.774,=C:\Wrk\asol-front\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.472,C:\Wrk\asol-front\src\Main.dfm=C:\Wrk\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.616,C:\Wrk\asol-front\src\Services\Services.Orderservice.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.559,C:\Wrk\asol-front\AsolFront.dproj=C:\Wrk\Project1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.291,=C:\Wrk\asol-front\src\UserListFrame.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.105,C:\Wrk\asol-front\src\Main.dfm=C:\Wrk\asol-front\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.413,=C:\Wrk\asol-front\src\Dto.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.105,C:\Wrk\asol-front\src\Main.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.472,C:\Wrk\asol-front\src\Main.pas=C:\Wrk\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.600,C:\Wrk\asol-front\src\Services\Services.UserService.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.005,C:\Wrk\asol-front\LoginFormUnit.pas=C:\Wrk\asol-front\Unit2.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.339,=C:\Wrk\asol-front\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.476,=C:\Wrk\asol-front\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.272,C:\Wrk\asol-front\Unit1.pas=C:\Wrk\asol-front\src\Lifetime.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.011,=C:\Wrk\asol-front\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.698,=C:\Wrk\asol-front\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.643,C:\Wrk\asol-front\Unit1.pas=C:\Wrk\asol-front\src\FrameRegistry.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.989,=C:\Wrk\asol-front\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.774,=C:\Wrk\asol-front\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.472,C:\Wrk\Unit1.pas=C:\Wrk\asol-front\src\Main.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.780,=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.643,C:\Wrk\asol-front\src\FrameRegistry.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.043,=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.360,C:\Wrk\asol-front\Unit1.pas=C:\Wrk\asol-front\src\Utils.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.464,=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.272,C:\Wrk\asol-front\src\Lifetime.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.467,=C:\Wrk\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.032,=C:\Wrk\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.773,=C:\Wrk\asol-front\src\OrderDetailFrame.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.291,=C:\Wrk\asol-front\src\UserListFrame.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.105,=C:\Wrk\asol-front\src\UserDetailFrame.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.876,=C:\Wrk\asol-front\src\OrderListFrame.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.185,=C:\Wrk\asol-front\src\Bootstrap.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.559,C:\Wrk\Project1.dproj=C:\Wrk\asol-front\AsolFront.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.105,C:\Wrk\asol-front\Unit1.dfm=C:\Wrk\asol-front\src\Main.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.549,=C:\Wrk\asol-front\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.502,C:\Wrk\asol-front\Unit2.pas=C:\Wrk\asol-front\src\Login.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.472,C:\Wrk\Unit1.dfm=C:\Wrk\asol-front\src\Main.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.005,C:\Wrk\asol-front\Unit2.dfm=C:\Wrk\asol-front\LoginFormUnit.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.502,C:\Wrk\asol-front\Unit2.dfm=C:\Wrk\asol-front\src\Login.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.895,=C:\Wrk\asol-front\Untitled1.md</Transaction>
-    <Transaction>2025.06.29 15:05:38.413,=C:\Wrk\asol-front\src\Dto.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.502,C:\Wrk\asol-front\src\Login.dfm=C:\Wrk\asol-front\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.989,=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.105,=C:\Wrk\asol-front\src\UserDetailFrame.pas</Transaction>
+    <Transaction>2025.06.30 02:11:49.163,=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>2025.06.30 02:17:35.298,C:\Wrk\asol-front\src\Buttons.pas=C:\Wrk\asol-front\Unit1.pas</Transaction>
+    <Transaction>2025.06.30 02:17:35.298,C:\Wrk\asol-front\src\Buttons.dfm=C:\Wrk\asol-front\Unit1.dfm</Transaction>
+    <Transaction>2025.06.30 02:17:52.469,=C:\Wrk\asol-front\Unit1.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="src"/>
@@ -62,5 +66,7 @@
     <File Path="src\Utils.pas"/>
     <File Path="src\Lifetime.pas"/>
     <File Path="src\Dto.pas"/>
+    <File Path="src\Buttons.pas"/>
+    <File Path="src\Buttons.dfm"/>
   </ProjectSortOrder>
 </BorlandProject>

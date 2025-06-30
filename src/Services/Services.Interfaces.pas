@@ -16,7 +16,7 @@ type
 
   IOrderService = interface
     ['{C47DFAD4-5CF7-42DB-B6A0-67832D7791AA}']
-    function GetOrders: TJSONArray;
+    function GetOrders: TArray<TOrder>;
     function GetCustomerScore(CustomerId: Integer): Double;
   end;
 

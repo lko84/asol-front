@@ -4,10 +4,12 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost, Dto, System.Generics.Collections;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FrameHost, Dto, System.Generics.Collections,
+  Vcl.ExtCtrls;
 
 type
   TUserList = class(TFrame, IFrameHost)
+    U001MainPanel: TPanel;
   private
     { Private declarations }
   public
@@ -21,7 +23,7 @@ implementation
 
 constructor TUserList.Create(AOwner: TComponent);
 begin
-
+ inherited;
 end;
 
 function TUserList.GetFrame: TFrame;

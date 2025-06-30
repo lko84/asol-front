@@ -1,0 +1,60 @@
+object BtnFrame: TBtnFrame
+  Left = 0
+  Top = 0
+  Width = 640
+  Height = 30
+  Align = alTop
+  AutoSize = True
+  TabOrder = 0
+  object BtnPanel: TPanel
+    Left = 0
+    Top = 0
+    Width = 640
+    Height = 30
+    Align = alTop
+    AutoSize = True
+    Padding.Bottom = 3
+    TabOrder = 0
+    object BtnRead: TButton
+      Left = 3
+      Top = 1
+      Width = 75
+      Height = 25
+      Caption = 'BtnRead'
+      TabOrder = 0
+    end
+    object BtnClear: TButton
+      Left = 84
+      Top = 1
+      Width = 75
+      Height = 25
+      Caption = 'BtnClear'
+      TabOrder = 1
+    end
+    object BtnNew: TButton
+      Left = 181
+      Top = 1
+      Width = 75
+      Height = 25
+      Caption = 'BtnNew'
+      TabOrder = 2
+    end
+    object BtnDelete: TButton
+      Left = 343
+      Top = 1
+      Width = 75
+      Height = 25
+      Caption = 'BtnDelete'
+      TabOrder = 3
+    end
+    object BtnSave: TButton
+      Left = 262
+      Top = 1
+      Width = 75
+      Height = 25
+      Caption = 'BtnSave'
+      TabOrder = 4
+      OnClick = BtnSaveClick
+    end
+  end
+end

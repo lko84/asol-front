@@ -2,7 +2,7 @@ unit FrameRegistry;
 
 interface
 
-uses System.Generics.Collections, System.SysUtils, Spring.Container, FrameHost, Vcl.Forms, Dto;
+uses System.Generics.Collections, System.SysUtils, Spring.Container, FrameHost, Vcl.Forms, Dto, Services.Interfaces;
 
 type
   TFrameInfo = record
@@ -20,7 +20,6 @@ type
    class function Instance: TFrameRegistry;
    procedure Register<TFrameType>(const Key, DisplayName: string; RequiredRoles: TArray<TUserRole>);
    function findDisplayName(const Partial: string): TArray<string>;
-   function getDisplayNames: TArray<string>;
    function GetKey(DisplayName: string): string;
    function get(Key: string): TFrame;
   private
@@ -49,12 +48,11 @@ end;
 procedure TFrameRegistry.Register<TFrameType>(const Key, DisplayName: string; RequiredRoles: TArray<TUserRole>);
 var
   Instance: IFrameHost;
-  Roles: TArray<TUserRole>;
   Info: TFrameInfo;
 begin
   GlobalContainer.RegisterType<TFrameType>.Implements<IFrameHost>(Key);
   Info.Key := Key;
-  Info.RequiredRoles := Roles;
+  Info.RequiredRoles := RequiredRoles;
   FMap.AddOrSetValue(DisplayName, Info);
 end;
 
@@ -75,23 +73,16 @@ var
   Session: TUserSession;
 begin
   Result := [];
-  Session := GlobalContainer.Resolve<TUserSession>;
+  Session := GlobalContainer.Resolve<IAuthService>.GetSession;
 
   for DisplayName in FMap.Keys do
   begin
     Info := FMap[DisplayName];
 
-    if Session.HasAnyRole(Info.RequiredRoles) and
-       LowerCase(DisplayName).Contains(Partial.ToLower) then
-    begin
+    if Session.HasAnyRole(Info.RequiredRoles) and ((Partial = '') or
+       (LowerCase(DisplayName).Contains(Partial.ToLower))) then
       Result := Result + [DisplayName];
-    end;
   end;
-end;
-
-function TFrameRegistry.getDisplayNames: TArray<string>;
-begin
-  Result := FMap.Keys.ToArray;
   TArray.Sort<string>(Result);
 end;
 

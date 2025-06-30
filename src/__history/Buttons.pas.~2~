@@ -1,0 +1,27 @@
+unit Buttons;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+
+type
+  TBtnFrame = class(TFrame)
+    BtnRead: TButton;
+    BtnClear: TButton;
+    BtnPanel: TPanel;
+    BtnNew: TButton;
+    BtnDelete: TButton;
+    BtnSave: TButton;
+  private
+    { Private declarations }
+  public
+    property OnSaveClick: TNotifyEvent read btnSave.OnClick write btnSave.OnClick;
+  end;
+
+implementation
+
+{$R *.dfm}
+
+end.
